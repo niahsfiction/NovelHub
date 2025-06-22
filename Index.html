@@ -305,4 +305,291 @@
                         <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-discord"></i></a>
+                        
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovelVerse - Advanced Story Platform</title>
+    <!-- Import Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+    
+    <style>
+        /* Custom Styles */
+        .book-cover { transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .book-cover:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); }
+        .reader-bg { background-color: #f8f4e8; }
+        .chapter-content { line-height: 1.8; font-size: 1.1rem; }
+        .chat-bubble { max-width: 70%; border-radius: 1rem; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+        .character-avatar { width: 80px; height: 80px; object-fit: cover; border: 3px solid white; }
+        #recordingIndicator { display: none; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Firebase Initialization -->
+    <script>
+        // Your Firebase config (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        // Global variables
+        let currentUser = null;
+        let mediaRecorder;
+        let audioChunks = [];
+        
+        // Auth state listener
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            if(user) {
+                document.getElementById('authButtons').classList.add('hidden');
+                document.getElementById('userProfileBtn').classList.remove('hidden');
+                loadUserProfile();
+            } else {
+                document.getElementById('authButtons').classList.remove('hidden');
+                document.getElementById('userProfileBtn').classList.add('hidden');
+            }
+        });
+    </script>
+
+    <!-- Navigation -->
+    <nav class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-book-open text-2xl"></i>
+                <h1 class="text-2xl font-bold">NovelVerse</h1>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#" class="hover:text-indigo-200" onclick="showSection('discover')">Discover</a>
+                <a href="#" class="hover:text-indigo-200" onclick="showSection('library')">Library</a>
+                <a href="#" class="hover:text-indigo-200" onclick="showSection('communities')">Communities</a>
+                <a href="#" class="hover:text-indigo-200" onclick="showSection('create')">Create</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-indigo-800" onclick="showSection('search')">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="p-2 rounded-full hover:bg-indigo-800" onclick="showSection('notifications')">
+                    <i class="fas fa-bell"></i>
+                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                </button>
+                <button id="userProfileBtn" class="hidden" onclick="showSection('profile')">
+                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </button>
+                <div id="authButtons" class="flex space-x-2">
+                    <button class="px-3 py-1 rounded-lg bg-white text-indigo-700 font-medium hover:bg-gray-100" onclick="showSection('login')">Login</button>
+                    <button class="px-3 py-1 rounded-lg bg-indigo-700 text-white font-medium hover:bg-indigo-800" onclick="showSection('signup')">Sign Up</button>
+                </div>
+                <button class="md:hidden p-2" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden bg-indigo-800 text-white md:hidden">
+        <div class="container mx-auto px-4 py-2 flex flex-col space-y-2">
+            <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded" onclick="showSection('discover')">Discover</a>
+            <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded" onclick="showSection('library')">Library</a>
+            <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded" onclick="showSection('communities')">Communities</a>
+            <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded" onclick="showSection('create')">Create</a>
+            <div class="border-t border-indigo-700 pt-2">
+                <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded block" onclick="showSection('profile')">Profile</a>
+                <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded block" onclick="showSection('notifications')">Notifications</a>
+                <a href="#" class="py-2 hover:bg-indigo-700 px-4 rounded block" onclick="showSection('settings')">Settings</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Sections -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Discover Section (Default View) -->
+        <section id="discover" class="section-content active">
+            <!-- Hero Section -->
+            <div class="mb-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-8 text-white">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Your Story Universe Awaits</h2>
+                    <p class="mb-6 text-lg">Read, create, and interact with thousands of stories in our vibrant community.</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-white text-indigo-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition" onclick="showSection('featured')">Featured Stories</button>
+                        <button class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-700 transition" onclick="showSection('create')">Start Writing</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Types Tabs -->
+            <div class="mb-8">
+                <div class="flex overflow-x-auto pb-2 space-x-2">
+                    <button class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg whitespace-nowrap" onclick="showStoryType('all')">All Stories</button>
+                    <button class="px-4 py-2 hover:bg-indigo-100 rounded-lg whitespace-nowrap" onclick="showStoryType('chat')">Chat Stories</button>
+                    <button class="px-4 py-2 hover:bg-indigo-100 rounded-lg whitespace-nowrap" onclick="showStoryType('visual')">Visual Novels</button>
+                    <button class="px-4 py-2 hover:bg-indigo-100 rounded-lg whitespace-nowrap" onclick="showStoryType('audio')">Audio Stories</button>
+                    <button class="px-4 py-2 hover:bg-indigo-100 rounded-lg whitespace-nowrap" onclick="showStoryType('interactive')">Interactive</button>
+                </div>
+            </div>
+
+            <!-- Story Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="storyGrid">
+                <!-- Stories will be loaded here dynamically -->
+            </div>
+        </section>
+
+        <!-- Create Story Section -->
+        <section id="create" class="section-content">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-2xl font-bold mb-6">Create New Story</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Left Column - Story Info -->
+                    <div class="md:col-span-2">
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Story Title</label>
+                            <input type="text" id="storyTitle" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter your story title">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Description</label>
+                            <textarea id="storyDescription" rows="4" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="What's your story about?"></textarea>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Cover Image</label>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-32 h-48 bg-gray-200 rounded-lg flex items-center justify-center" id="coverPreview">
+                                    <i class="fas fa-image text-gray-400 text-2xl"></i>
+                                </div>
+                                <div>
+                                    <input type="file" id="coverUpload" class="hidden" accept="image/*">
+                                    <button onclick="document.getElementById('coverUpload').click()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Upload Cover</button>
+                                    <p class="text-sm text-gray-500 mt-1">JPEG or PNG, 600x900 recommended</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Story Type</label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <button class="px-4 py-3 border rounded-lg hover:bg-indigo-50 flex flex-col items-center" onclick="selectStoryType('standard')">
+                                    <i class="fas fa-book text-2xl mb-2 text-indigo-600"></i>
+                                    <span>Standard Novel</span>
+                                </button>
+                                <button class="px-4 py-3 border rounded-lg hover:bg-indigo-50 flex flex-col items-center" onclick="selectStoryType('chat')">
+                                    <i class="fas fa-comments text-2xl mb-2 text-indigo-600"></i>
+                                    <span>Chat Story</span>
+                                </button>
+                                <button class="px-4 py-3 border rounded-lg hover:bg-indigo-50 flex flex-col items-center" onclick="selectStoryType('visual')">
+                                    <i class="fas fa-images text-2xl mb-2 text-indigo-600"></i>
+                                    <span>Visual Novel</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     
+                    <!-- Right Column - Characters & Settings -->
+                    <div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-medium mb-3">Characters</h3>
+                            <div id="characterList" class="space-y-3 mb-4">
+                                <!-- Characters will be added here -->
+                            </div>
+                            <button class="w-full py-2 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center justify-center" onclick="addCharacter()">
+                                <i class="fas fa-plus mr-2"></i> Add Character
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-medium mb-3">Story Settings</h3>
+                            <div class="mb-3">
+                                <label class="block text-sm text-gray-700 mb-1">Genre</label>
+                                <select class="w-full px-3 py-2 border rounded-lg">
+                                    <option>Fantasy</option>
+                                    <option>Romance</option>
+                                    <option>Sci-Fi</option>
+                                    <option>Mystery</option>
+                                    <option>Horror</option>
+                                    <option>Historical</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-sm text-gray-700 mb-1">Status</label>
+                                <select class="w-full px-3 py-2 border rounded-lg">
+                                    <option>Ongoing</option>
+                                    <option>Completed</option>
+                                    <option>Hiatus</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Tags</label>
+                                <input type="text" class="w-full px-3 py-2 border rounded-lg" placeholder="Add tags separated by commas">
+                            </div>
+                        </div>
+                        
+                        <button class="w-full mt-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium" onclick="createStory()">
+                            Create Story
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Character Modal -->
+        <div id="characterModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+            <div class="bg-white rounded-lg w-full max-w-md mx-4">
+                <div class="p-4 border-b">
+                    <h3 class="text-lg font-medium">Add Character</h3>
+                </div>
+                <div class="p-4">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Character Name</label>
+                        <input type="text" id="charName" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Role</label>
+                        <input type="text" id="charRole" class="w-full px-3 py-2 border rounded-lg" placeholder="Protagonist, Antagonist, etc.">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Avatar</label>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-gray-200 rounded-full overflow-hidden" id="charAvatarPreview">
+                                <i class="fas fa-user text-gray-400 text-2xl w-full h-full flex items-center justify-center"></i>
+                            </div>
+                            <div>
+                                <input type="file" id="charAvatarUpload" class="hidden" accept="image/*">
+                                <button onclick="document.getElementById('charAvatarUpload').click()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-lg">Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Description</label>
+                        <textarea id="charDescription" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
+                    </div>
+                </div>
+                <div class="p-4 border-t flex justify-end space-x-2">
+                    <button class="px-4 py-2 border rounded-lg hover:bg-gray-100" onclick="close                        
