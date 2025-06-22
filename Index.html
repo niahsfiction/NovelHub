@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovelHub - Read & Publish Stories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .book-cover {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .book-cover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        .reader-bg {
+            background-color: #f8f4e8;
+        }
+        .chapter-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-indigo-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-book-open text-2xl"></i>
+                <h1 class="text-2xl font-bold">NovelHub</h1>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#" class="hover:text-indigo-200">Discover</a>
+                <a href="#" class="hover:text-indigo-200">Library</a>
+                <a href="#" class="hover:text-indigo-200">Write</a>
+                <a href="#" class="hover:text-indigo-200">Community</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-indigo-800">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="p-2 rounded-full hover:bg-indigo-800">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <button class="md:hidden p-2">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="mb-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-8 text-white">
+            <div class="max-w-2xl">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Discover Your Next Favorite Story</h2>
+                <p class="mb-6 text-lg">Join thousands of readers exploring original novels, fanfictions, and short stories from talented writers worldwide.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-white text-indigo-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">Start Reading</button>
+                    <button class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-700 transition">Write Your Story</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Novels -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Featured Novels</h2>
+                <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">See All</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Novel 1 -->
+                <div class="book-card">
+                    <div class="book-cover bg-gradient-to-br from-blue-400 to-indigo-600 rounded-lg overflow-hidden h-48 relative">
+                        <div class="absolute inset-0 flex items-center justify-center text-white">
+                            <i class="fas fa-book-open text-5xl"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                            <h3 class="font-semibold truncate">The Last Mage</h3>
+                            <p class="text-xs">Fantasy</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">4.8 ★</span>
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Ongoing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Novel 2 -->
+                <div class="book-card">
+                    <div class="book-cover bg-gradient-to-br from-red-400 to-pink-600 rounded-lg overflow-hidden h-48 relative">
+                        <div class="absolute inset-0 flex items-center justify-center text-white">
+                            <i class="fas fa-book-open text-5xl"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                            <h3 class="font-semibold truncate">Midnight Heist</h3>
+                            <p class="text-xs">Thriller</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">4.5 ★</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Novel 3 -->
+                <div class="book-card">
+                    <div class="book-cover bg-gradient-to-br from-yellow-400 to-orange-600 rounded-lg overflow-hidden h-48 relative">
+                        <div class="absolute inset-0 flex items-center justify-center text-white">
+                            <i class="fas fa-book-open text-5xl"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                            <h3 class="font-semibold truncate">Starlight Academy</h3>
+                            <p class="text-xs">Romance</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">4.7 ★</span>
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Ongoing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Novel 4 -->
+                <div class="book-card">
+                    <div class="book-cover bg-gradient-to-br from-green-400 to-teal-600 rounded-lg overflow-hidden h-48 relative">
+                        <div class="absolute inset-0 flex items-center justify-center text-white">
+                            <i class="fas fa-book-open text-5xl"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                            <h3 class="font-semibold truncate">Cyber Rebirth</h3>
+                            <p class="text-xs">Sci-Fi</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">4.9 ★</span>
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">Ongoing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Novel 5 -->
+                <div class="book-card">
+                    <div class="book-cover bg-gradient-to-br from-purple-400 to-pink-600 rounded-lg overflow-hidden h-48 relative">
+                        <div class="absolute inset-0 flex items-center justify-center text-white">
+                            <i class="fas fa-book-open text-5xl"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                            <h3 class="font-semibold truncate">Royal Blood</h3>
+                            <p class="text-xs">Historical</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">4.6 ★</span>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Browse Categories</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <a href="#" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition flex items-center space-x-2">
+                    <i class="fas fa-hat-wizard text-purple-500"></i>
+                    <span>Fantasy</span>
+                </a>
+                <a href="#" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition flex items-center space-x-2">
+                    <i class="fas fa-heart text-pink-500"></i>
+                    <span>Romance</span>
+                </a>
+                <a href="#" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition flex items-center space-x-2">
+                    <i class="fas fa-robot text-blue-500"></i>
+                    <span>Sci-Fi</span>
+                </a>
+                <a href="#" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition flex items-center space-x-2">
+                    <i class="fas fa-mask text-yellow-500"></i>
+                    <span>Mystery</span>
+                </a>
+                <a href="#" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition flex items-center space-x-2">
+                    <i class="fas fa-ghost text-indigo-500"></i>
+                    <span>Horror</span>
+                </a>
+                <a href="#" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition flex items-center space-x-2">
+                    <i class="fas fa-crown text-amber-500"></i>
+                    <span>Historical</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Reader Modal (Hidden by default) -->
+        <div id="readerModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="absolute inset-0 flex items-center justify-center p-4">
+                <div class="bg-white rounded-xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+                    <!-- Reader Header -->
+                    <div class="bg-indigo-900 text-white p-4 flex justify-between items-center">
+                        <div>
+                            <h3 id="readerTitle" class="font-bold text-lg">The Last Mage</h3>
+                            <p id="readerChapter" class="text-sm">Chapter 1: The Awakening</p>
+                        </div>
+                        <button id="closeReader" class="p-2 rounded-full hover:bg-indigo-800">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Reader Content -->
+                    <div class="reader-bg flex-1 overflow-y-auto custom-scrollbar p-6">
+                        <div id="readerContent" class="max-w-2xl mx-auto chapter-content">
+                            <p>The forest was silent except for the occasional rustle of leaves in the wind. Aria moved cautiously between the ancient trees, her boots making no sound on the moss-covered ground. She could feel it—the energy that had been calling to her for weeks.</p>
+                            <p class="mt-4">"It's here," she whispered to herself, her breath forming small clouds in the cold air. The amulet around her neck pulsed with a faint blue light, reacting to the presence of magic.</p>
+                            <p class="mt-4">Suddenly, the ground trembled beneath her feet. Aria barely had time to react before a massive root erupted from the earth, wrapping around her ankle. She cried out as she was lifted upside down, her cloak falling over her face.</p>
+                            <p class="mt-4">"Who dares enter my domain?" a deep voice boomed through the trees.</p>
+                            <p class="mt-4">Aria struggled against the vine holding her captive. "I mean no harm! I'm seeking knowledge!"</p>
+                            <p class="mt-4">The vines loosened slightly, and Aria managed to pull her cloak away from her face. Before her stood the Guardian of the Ancient Grove—a being of bark and leaves, with eyes that glowed like embers.</p>
+                            <p class="mt-4">"Knowledge comes at a price, child," the Guardian rumbled. "Are you prepared to pay it?"</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Reader Footer -->
+                    <div class="bg-gray-100 p-4 flex justify-between items-center border-t">
+                        <div class="flex space-x-2">
+                            <button class="p-2 rounded-full hover:bg-gray-200">
+                                <i class="fas fa-font"></i>
+                            </button>
+                            <button class="p-2 rounded-full hover:bg-gray-200">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button id="prevChapter" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50" disabled>
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </button>
+                            <button id="nextChapter" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            Page 1 of 5
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">NovelHub</h3>
+                    <p class="text-gray-400">Your gateway to amazing stories from writers around the world.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Popular Novels</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">New Releases</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Top Authors</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Genres</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Community</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Forums</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Events</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contests</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Beta Readers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-discord"></i></a>
+                    
